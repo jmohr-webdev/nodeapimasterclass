@@ -63,3 +63,16 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie('token', token, options)
     .json({ success: true, token });
 };
+
+// @desc      Get Current Logged In User
+// @route     GET /api/v1/auth/me
+// @access    private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid credentials', 401));
+  }
+
+  res.status(200).json({ success: true, user });
+});
