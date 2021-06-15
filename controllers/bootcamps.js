@@ -35,6 +35,20 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/bootcamps/
 // @access    private
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
+  // Add user to body
+  req.body.user = req.user.id;
+
+  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
+
+  // If user is not an admin, they can only add one bootcamp
+  if (publishedBootcamp && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} has already published a bootcamphy`
+      )
+    );
+  }
+
   const newBootcamp = await Bootcamp.create(req.body);
 
   res
@@ -46,14 +60,7 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/bootcamps/:id
 // @access    private
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
-  const updatedBootcamp = await Bootcamp.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      ranValidators: true,
-    }
-  );
+  let updatedBootcamp = await Bootcamp.findById(req.params.id);
 
   if (!updatedBootcamp) {
     return next(
@@ -63,6 +70,23 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
       )
     );
   }
+
+  if (
+    updatedBootcamp.user.toString() !== req.user.id &&
+    req.user.role !== 'admin'
+  ) {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} is not authorized to update this bootcamp`,
+        401
+      )
+    );
+  }
+
+  updatedBootcamp = await Bootcamp.findById(req.params.id, req.body, {
+    new: true,
+    ranValidators: true,
+  });
 
   res.status(200).json({
     success: true,
@@ -81,6 +105,18 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
       new ErrorResponse(
         `Bootcamp not found with an id of ${req.params.id}`,
         404
+      )
+    );
+  }
+
+  if (
+    deletedBootcamp.user.toString() !== req.user.id &&
+    req.user.role !== 'admin'
+  ) {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} is not authorized to delete this bootcamp`,
+        401
       )
     );
   }
@@ -132,6 +168,15 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
       new ErrorResponse(
         `Bootcamp not found with an id of ${req.params.id}`,
         404
+      )
+    );
+  }
+
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} is not authorized to update this bootcamp`,
+        401
       )
     );
   }
