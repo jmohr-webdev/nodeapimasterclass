@@ -19,26 +19,23 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
   }
 });
 
-// // @desc      Get a single course
-// // @route     GET /api/v1/courses/:id
-// // @access    public
-// exports.getCourse = asyncHandler(async (req, res, next) => {
-//   const course = await Course.findById(req.params.id).populate({
-//     path: 'bootcamp',
-//     select: 'name description',
-//   });
+// @desc      Get a single review
+// @route     GET /api/v1/reviews/:id
+// @access    public
+exports.getReview = asyncHandler(async (req, res, next) => {
+  const review = await Review.findById(req.params.id).populate({
+    path: 'bootcamp',
+    select: 'name description',
+  });
 
-//   if (!course) {
-//     return next(
-//       new ErrorResponse(
-//         `Nooooooooooooo course with the id of ${req.params.id}`
-//       ),
-//       404
-//     );
-//   }
+  if (!review) {
+    return next(
+      new ErrorResponse(`No review with the id of ${req.params.id}`, 404)
+    );
+  }
 
-//   res.status(200).json({ succes: true, data: course });
-// });
+  res.status(200).json({ succes: true, data: review });
+});
 
 // // @desc      Add a course
 // // @route     POST /api/v1/bootcamps/:bootcampId/courses
