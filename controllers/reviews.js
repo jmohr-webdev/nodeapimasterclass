@@ -37,35 +37,26 @@ exports.getReview = asyncHandler(async (req, res, next) => {
   res.status(200).json({ succes: true, data: review });
 });
 
-// // @desc      Add a course
-// // @route     POST /api/v1/bootcamps/:bootcampId/courses
-// // @access    private
-// exports.addCourse = asyncHandler(async (req, res, next) => {
-//   req.body.bootcamp = req.params.bootcampId;
-//   req.body.user = req.user.id;
+// @desc      Add a review
+// @route     POST /api/v1/bootcamps/:bootcampId/reviews
+// @access    private
+exports.addReview = asyncHandler(async (req, res, next) => {
+  req.body.bootcamp = req.params.bootcampId;
+  req.body.user = req.user.id;
 
-//   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+  const bootcamp = await Bootcamp.findById(req.params.bootcampId);
 
-//   if (!bootcamp) {
-//     return next(
-//       new ErrorResponse(`No bootcamp with the id of ${req.params.bootcampId}`),
-//       404
-//     );
-//   }
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(`No bootcamp with the id of ${req.params.bootcampId}`),
+      404
+    );
+  }
 
-//   if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
-//     return next(
-//       new ErrorResponse(
-//         `The user with ID ${req.user.id} is not authorized to add a couse to bootcamp with the id of ${bootcamp._id}`,
-//         401
-//       )
-//     );
-//   }
+  const review = await Review.create(req.body);
 
-//   const course = await Course.create(req.body);
-
-//   res.status(200).json({ succes: true, data: course });
-// });
+  res.status(201).json({ succes: true, data: review });
+});
 
 // // @desc      Update a course
 // // @route     PUT /api/v1/bootcamps/:bootcampId/courses/:courseId
