@@ -85,7 +85,7 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
   if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(
       new ErrorResponse(
-        `The user with ID ${req.user.id} is not authorized to add a couse to course with the id of ${course._id}`,
+        `The user with ID ${req.user.id} is not authorized to edit the course with an id of ${course._id}`,
         401
       )
     );
@@ -115,7 +115,7 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(
       new ErrorResponse(
-        `The user with ID ${req.user.id} is not authorized to add a couse to course with the id of ${course._id}`,
+        `The user with ID ${req.user.id} is not authorized to delete this course`,
         401
       )
     );

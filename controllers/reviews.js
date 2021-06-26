@@ -58,61 +58,61 @@ exports.addReview = asyncHandler(async (req, res, next) => {
   res.status(201).json({ succes: true, data: review });
 });
 
-// // @desc      Update a course
-// // @route     PUT /api/v1/bootcamps/:bootcampId/courses/:courseId
-// // @access    private
-// exports.updateCourse = asyncHandler(async (req, res, next) => {
-//   let course = await Course.findById(req.params.id);
-//   req.body.user = req.user.id;
+// @desc      Update a review
+// @route     PUT /api/v1/bootcamps/:bootcampId/reviews/:reviewId
+// @access    private
+exports.updateReview = asyncHandler(async (req, res, next) => {
+  let review = await Review.findById(req.params.id);
+  req.body.user = req.user.id;
 
-//   if (!course) {
-//     return next(
-//       new ErrorResponse(`No course with the id of ${req.params.id}`),
-//       404
-//     );
-//   }
+  if (!review) {
+    return next(
+      new ErrorResponse(`No review with the id of ${req.params.id}`),
+      404
+    );
+  }
 
-//   if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
-//     return next(
-//       new ErrorResponse(
-//         `The user with ID ${req.user.id} is not authorized to add a couse to course with the id of ${course._id}`,
-//         401
-//       )
-//     );
-//   }
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} is not authorized to update this review with an id of ${review._id}`,
+        401
+      )
+    );
+  }
 
-//   course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
+  review = await Review.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-//   res.status(200).json({ succes: true, data: course });
-// });
+  res.status(200).json({ succes: true, data: review });
+});
 
-// // @desc      Delete a course
-// // @route     PUT /api/v1/bootcamps/:bootcampId/courses/:courseId
-// // @access    private
-// exports.deleteCourse = asyncHandler(async (req, res, next) => {
-//   const course = await Course.findById(req.params.id);
-//   req.body.user = req.user.id;
+// @desc      Delete a review
+// @route     PUT /api/v1/bootcamps/:bootcampId/reviews/:reviewId
+// @access    private
+exports.deleteReview = asyncHandler(async (req, res, next) => {
+  const review = await Review.findById(req.params.id);
+  req.body.user = req.user.id;
 
-//   if (!course) {
-//     return next(
-//       new ErrorResponse(`No course with the id of ${req.params.id}`),
-//       404
-//     );
-//   }
+  if (!review) {
+    return next(
+      new ErrorResponse(`No review with the id of ${req.params.id}`),
+      404
+    );
+  }
 
-//   if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
-//     return next(
-//       new ErrorResponse(
-//         `The user with ID ${req.user.id} is not authorized to add a couse to course with the id of ${course._id}`,
-//         401
-//       )
-//     );
-//   }
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} is not authorized to delete a review with id of ${review._id}`,
+        401
+      )
+    );
+  }
 
-//   await course.remove();
+  await review.remove();
 
-//   res.status(200).json({ succes: true, data: {} });
-// });
+  res.status(200).json({ succes: true, data: {} });
+});
