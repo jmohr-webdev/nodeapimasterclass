@@ -6,6 +6,7 @@ const colors = require('colors');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
@@ -31,6 +32,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // File uploading
 app.use(fileUpload());
+
+// Sanitize data
+app.use(mongoSanitize());
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
